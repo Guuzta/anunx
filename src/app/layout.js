@@ -1,6 +1,8 @@
 import MuiThemeProvider from '../theme'
 import { roboto } from '../theme/fonts'
 
+import TemplateDefault from '../templates/Default'
+
 export const metadata = {
   title: 'Exemplo de título',
   description: 'Exemplo de descrição para a minha página'
@@ -11,7 +13,9 @@ export default function RootLayout({ children }) {
     <html lang='pt-BR'>
       <body className={roboto.className}>
         <MuiThemeProvider>
-          {children}
+          <TemplateDefault>
+            {children}
+          </TemplateDefault>
         </MuiThemeProvider>
       </body>
     </html>
