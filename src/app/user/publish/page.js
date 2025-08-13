@@ -10,7 +10,11 @@ import {
     TextField,
     Select,
     MenuItem,
-    IconButton
+    IconButton,
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
 } from "@mui/material"
 
 import { DeleteForever } from "@mui/icons-material"
@@ -146,7 +150,7 @@ const Publish = () => {
                                 >
                                     {
                                         index === 0 ?
-                                        <Box>
+                                            <Box>
                                                 <Typography
                                                     variant='body2'
                                                     sx={{
@@ -160,9 +164,9 @@ const Publish = () => {
                                                 >
                                                     Principal
                                                 </Typography>
-                                        </Box>
-                                        : null
-                                        
+                                            </Box>
+                                            : null
+
                                     }
                                     <Box
                                         className='deleteImage'
@@ -200,6 +204,22 @@ const Publish = () => {
                         variant="outlined"
                         fullWidth
                     />
+                </Box>
+            </Container>
+
+            <Container maxWidth='md'>
+                <Box sx={{ backgroundColor: theme.palette.background.paper, padding: 4 }}>
+                    <Typography component='h3' variant='h6' gutterBottom>
+                        Preço
+                    </Typography>
+                    <br />
+                    <FormControl fullWidth variant='outlined'>
+                        <InputLabel >Valor</InputLabel>
+                        <OutlinedInput
+                            startAdornment={<InputAdornment position='start'>R$</InputAdornment>}
+                            label="Valor"
+                        />
+                    </FormControl>
                 </Box>
             </Container>
 
