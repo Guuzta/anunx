@@ -1,7 +1,8 @@
-import MuiThemeProvider from '../theme'
-import { roboto } from '../theme/fonts'
+import './global.css'
 
+import { roboto } from '../theme/fonts'
 import TemplateDefault from '../templates/Default'
+import MuiThemeProvider from '../theme'
 
 export const metadata = {
   title: 'Exemplo de título',

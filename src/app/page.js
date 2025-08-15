@@ -3,9 +3,7 @@
 import {
   Card,
   CardMedia,
-  CardActions,
   CardContent,
-  Button,
   Paper,
   Container,
   IconButton,
@@ -34,12 +32,12 @@ export default function Home() {
         </Paper>
       </Container>
 
-      <Container maxWidth='md' sx={{ paddingTop: '45px' }}>
+      <Container maxWidth='lg' sx={{ paddingTop: '45px' }}>
         <Typography component='h2' variant='h4' align='center' gutterBottom>
           Destaques
         </Typography>
 
-        <Grid container spacing={4}>
+        <Grid container spacing={12} >
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Card sx={{ maxWidth: 300 }}>
               <CardMedia
