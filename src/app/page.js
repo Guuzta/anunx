@@ -1,9 +1,6 @@
 'use client'
 
 import {
-  Card,
-  CardMedia,
-  CardContent,
   Paper,
   Container,
   IconButton,
@@ -11,7 +8,10 @@ import {
   Typography,
   Grid
 } from "@mui/material"
+
 import SearchIcon from '@mui/icons-material/Search'
+
+import Card from '../components/Card'
 
 export default function Home() {
   return (
@@ -32,79 +32,32 @@ export default function Home() {
         </Paper>
       </Container>
 
-      <Container maxWidth='lg' sx={{ paddingTop: '45px' }}>
+      <Container maxWidth='md' sx={{ paddingTop: '45px' }}>
         <Typography component='h2' variant='h4' align='center' gutterBottom>
           Destaques
         </Typography>
 
-        <Grid container spacing={12} >
+        <Grid container spacing={4} >
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ maxWidth: 300 }}>
-              <CardMedia
-                sx={{ height: 140 }}
-                image="https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg"
-                title="random image"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Produto
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  R$ 30,90
-                </Typography>
-              </CardContent>
-            </Card>
+            <Card
+              image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
+              title='Produto'
+              subtitle='R$ 20,90'
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ maxWidth: 300 }}>
-              <CardMedia
-                sx={{ height: 140 }}
-                image="https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg"
-                title="random image"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Produto
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  R$ 30,90
-                </Typography>
-              </CardContent>
-            </Card>
+            <Card
+              image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
+              title='Produto'
+              subtitle='R$ 20,90'
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ maxWidth: 300 }}>
-              <CardMedia
-                sx={{ height: 140 }}
-                image="https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg"
-                title="random image"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Produto
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  R$ 30,90
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ maxWidth: 300 }}>
-              <CardMedia
-                sx={{ height: 140 }}
-                image="https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg"
-                title="random image"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Produto
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  R$ 30,90
-                </Typography>
-              </CardContent>
-            </Card>
+            <Card
+              image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
+              title='Produto'
+              subtitle='R$ 20,90'
+            />
           </Grid>
         </Grid>
       </Container>
