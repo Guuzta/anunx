@@ -50,7 +50,7 @@ const Publish = () => {
 
     return (
         <>
-            <Container maxWidth='sm' sx={{ my: 7 }}>
+            <Container maxWidth='sm'>
                 <Typography
                     component='h1'
                     variant='h3'

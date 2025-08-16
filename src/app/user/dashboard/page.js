@@ -14,7 +14,7 @@ import {
 const Dashboard = () => {
     return (
         <>
-            <Container maxWidth='sm' sx={{ py: 7 }}>
+            <Container maxWidth='sm'>
                 <Typography
                     component='h1'
                     variant='h3'

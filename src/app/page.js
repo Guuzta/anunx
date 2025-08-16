@@ -16,7 +16,7 @@ import SearchIcon from '@mui/icons-material/Search'
 export default function Home() {
   return (
     <>
-      <Container maxWidth='md' sx={{ paddingTop: '45px', width: '60%' }}>
+      <Container maxWidth='md'>
         <Typography component='h1' variant='h4' align='center'>
           O que deseja encontrar?
         </Typography>
