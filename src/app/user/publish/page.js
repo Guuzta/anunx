@@ -14,6 +14,7 @@ import {
     MenuItem,
     IconButton,
     FormControl,
+    FormHelperText,
     InputLabel,
     OutlinedInput,
     InputAdornment,
@@ -31,6 +32,7 @@ const validationSchema = yup.object({
         .max(20, 'Escreva um título menor! (Max: 20 caracteres)')
         .required('Campo obrigatório!'),
 
+    category: yup.string().required('Campo obrigatório!')
 
 })
 
@@ -64,7 +66,8 @@ const Publish = () => {
 
             <Formik
                 initialValues={{
-                    title: ''
+                    title: '',
+                    category: ''
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
@@ -125,21 +128,25 @@ const Publish = () => {
                                         <Typography component='h3' variant='h6' gutterBottom>
                                             Categoria
                                         </Typography>
-                                        <Select
-                                            label="Age"
-                                            value=""
-                                            displayEmpty
-                                            fullWidth
-                                            variant="standard"
-                                        >
-                                            <MenuItem value="">
-                                                <em>--Selecione--</em>
-                                            </MenuItem>
-                                            <MenuItem value={1}>Carro</MenuItem>
-                                            <MenuItem value={2}>Moto</MenuItem>
-                                            <MenuItem value={3}>Móveis</MenuItem>
-                                            <MenuItem value={4}>Brinquedos</MenuItem>
-                                        </Select>
+                                        <FormControl fullWidth error={errors.category}>
+                                            <Select
+                                                name='category'
+                                                label="Age"
+                                                value={values.category}
+                                                onChange={handleChange}
+                                                displayEmpty
+                                                fullWidth
+                                                variant="standard"
+                                            >
+                                                <MenuItem value="Carro">Carro</MenuItem>
+                                                <MenuItem value="Moto">Moto</MenuItem>
+                                                <MenuItem value="Móveis">Móveis</MenuItem>
+                                                <MenuItem value="Brinquedos">Brinquedos</MenuItem>
+                                            </Select>
+                                            <FormHelperText>
+                                                {errors.category}
+                                            </FormHelperText>
+                                        </FormControl>
                                     </Box>
                                 </Container>
 
