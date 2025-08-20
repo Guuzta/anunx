@@ -18,6 +18,7 @@ import {
     InputLabel,
     OutlinedInput,
     InputAdornment,
+    Input,
 } from "@mui/material"
 
 import { DeleteForever } from "@mui/icons-material"
@@ -32,7 +33,12 @@ const validationSchema = yup.object({
         .max(20, 'Escreva um título menor! (Max: 20 caracteres)')
         .required('Campo obrigatório!'),
 
-    category: yup.string().required('Campo obrigatório!')
+    category: yup.string().required('Campo obrigatório!'),
+    description: yup.string()
+    .min(50, 'Escreva uma descrição maior! (Min: 50 caracteres)')
+    .required('Campo obrigatório!'),
+
+
 
 })
 
@@ -67,7 +73,8 @@ const Publish = () => {
             <Formik
                 initialValues={{
                     title: '',
-                    category: ''
+                    category: '',
+                    description: ''
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
@@ -84,7 +91,7 @@ const Publish = () => {
                     }) => {
 
                         return (
-                            <form onClick={handleSubmit}>
+                            <form onSubmit={handleSubmit}>
                                 <Container maxWidth='sm' sx={{ marginBottom: '30px' }}>
                                     <Typography
                                         component='h1'
@@ -110,25 +117,24 @@ const Publish = () => {
 
                                 <Container maxWidth='md'>
                                     <Box sx={{ backgroundColor: theme.palette.background.paper, padding: 4 }}>
-                                        <Typography component='h3' variant='h6' gutterBottom>
-                                            Título do Anúncio
-                                        </Typography>
-                                        <TextField
-                                            name="title"
-                                            helperText={errors.title}
-                                            error={errors.title}
-                                            onChange={handleChange}
-                                            fullWidth
-                                            placeholder="ex.: Bicileta Aro 18 usada"
-                                            variant="standard"
-                                            value={values.title}
-                                        />
-                                        <br />
-                                        <br />
-                                        <Typography component='h3' variant='h6' gutterBottom>
-                                            Categoria
-                                        </Typography>
+                                       
+                                        <FormControl fullWidth error={errors.title}>
+                                            <InputLabel>Título do Anúncio</InputLabel>
+                                            <Input
+                                                name="title"
+                                                onChange={handleChange}
+                                                variant="standard"
+                                                value={values.title}
+                                            />
+                                            <FormHelperText>
+                                                {errors.title}
+                                            </FormHelperText>
+                                        </FormControl>
+                                        <br /><br />
+
+                                    
                                         <FormControl fullWidth error={errors.category}>
+                                            <InputLabel>Categoria</InputLabel>
                                             <Select
                                                 name='category'
                                                 label="Age"
@@ -240,18 +246,22 @@ const Publish = () => {
 
                                 <Container maxWidth='md'>
                                     <Box sx={{ backgroundColor: theme.palette.background.paper, padding: 4 }}>
-                                        <Typography component='h3' variant='h6' gutterBottom>
-                                            Descrição
-                                        </Typography>
-                                        <Typography component='h3' variant='body2' gutterBottom>
-                                            Escreva os detalhes do que está vendendo!
-                                        </Typography>
-                                        <TextField
-                                            multiline
-                                            rows={6}
-                                            variant="outlined"
-                                            fullWidth
-                                        />
+
+                                        <FormControl fullWidth error={errors.description}>
+                                            <InputLabel>Escreva os detalhes do que está vendendo!</InputLabel>
+                                            <Input
+                                                name='description'
+                                                onChange={handleChange}
+                                                value={values.description}
+                                                multiline
+                                                rows={6}
+                                                variant="outlined"
+                                            />
+                                            <FormHelperText>
+                                                {errors.description}
+                                            </FormHelperText>
+                                        </FormControl>
+
                                     </Box>
                                 </Container>
 
