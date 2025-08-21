@@ -9,14 +9,12 @@ import {
     Button,
     Container,
     Typography,
-    TextField,
     Select,
     MenuItem,
     IconButton,
     FormControl,
     FormHelperText,
     InputLabel,
-    OutlinedInput,
     InputAdornment,
     Input,
 } from "@mui/material"
@@ -40,33 +38,11 @@ const validationSchema = yup.object({
     price: yup.number().required('Campo obrigatório!'),
     email: yup.string().email('Digite um e-mail válido').required('Campo obrigatório!'),
     name: yup.string().required('Campo obrigatório!'),
-    phone: yup.number('Digite um telefone válido!').typeError('Precisa ser um número!').required('Campo obrigatório!')
+    phone: yup.number('Digite um telefone válido!').typeError('Precisa ser um número!').required('Campo obrigatório!'),
+    files: yup.array().min(1, 'Envie pelo menos uma foto!').required('Campo obrigatório!')
 })
 
 const Publish = () => {
-
-    const [files, setFiles] = useState([])
-
-    const { getRootProps, getInputProps } = useDropzone({
-        accept: 'image/*',
-        onDrop: (acceptedFile) => {
-            const newFiles = acceptedFile.map(file => {
-                return Object.assign(file, {
-                    preview: URL.createObjectURL(file)
-                })
-            })
-
-            setFiles([
-                ...files,
-                ...newFiles
-            ])
-        }
-    })
-
-    const handleRemoveFile = fileName => {
-        const newFileState = files.filter(file => file.name !== fileName)
-        setFiles(newFileState)
-    }
 
     return (
         <>
@@ -79,7 +55,8 @@ const Publish = () => {
                     price: '',
                     email: '',
                     name: '',
-                    phone: ''
+                    phone: '',
+                    files: [],
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
@@ -89,11 +66,35 @@ const Publish = () => {
             >
                 {
                     ({
+                        touched,
                         values,
                         errors,
                         handleChange,
-                        handleSubmit
+                        handleSubmit,
+                        setFieldValue
                     }) => {
+
+
+                        const { getRootProps, getInputProps } = useDropzone({
+                            accept: 'image/*',
+                            onDrop: (acceptedFile) => {
+                                const newFiles = acceptedFile.map(file => {
+                                    return Object.assign(file, {
+                                        preview: URL.createObjectURL(file)
+                                    })
+                                })
+
+                                setFieldValue('files', [
+                                    ...values.files,
+                                    ...newFiles
+                                ])
+                            }
+                        })
+
+                        const handleRemoveFile = fileName => {
+                            const newFileState = values.files.filter(file => file.name !== fileName)
+                            setFieldValue('files', newFileState)
+                        }
 
                         return (
                             <form onSubmit={handleSubmit}>
@@ -123,7 +124,7 @@ const Publish = () => {
                                 <Container maxWidth='md'>
                                     <Box sx={{ backgroundColor: theme.palette.background.paper, padding: 4 }}>
 
-                                        <FormControl fullWidth error={errors.title}>
+                                        <FormControl fullWidth error={errors.title && touched.title}>
                                             <InputLabel>Título do Anúncio</InputLabel>
                                             <Input
                                                 name="title"
@@ -132,13 +133,13 @@ const Publish = () => {
                                                 value={values.title}
                                             />
                                             <FormHelperText>
-                                                {errors.title}
+                                                {errors.title && touched.title ? errors.title : null}
                                             </FormHelperText>
                                         </FormControl>
                                         <br /><br />
 
 
-                                        <FormControl fullWidth error={errors.category}>
+                                        <FormControl fullWidth error={errors.category && touched.category}>
                                             <InputLabel>Categoria</InputLabel>
                                             <Select
                                                 name='category'
@@ -155,7 +156,7 @@ const Publish = () => {
                                                 <MenuItem value="Brinquedos">Brinquedos</MenuItem>
                                             </Select>
                                             <FormHelperText>
-                                                {errors.category}
+                                                {errors.category && touched.category ? errors.category : null}
                                             </FormHelperText>
                                         </FormControl>
                                     </Box>
@@ -163,12 +164,17 @@ const Publish = () => {
 
                                 <Container maxWidth='md'>
                                     <Box sx={{ backgroundColor: theme.palette.background.paper, padding: 4 }}>
-                                        <Typography component='h3' variant='h6' gutterBottom>
+                                        <Typography component='h3' variant='h6' gutterBottom color={errors.files && touched.files ? 'error' : 'primary'}>
                                             Imagens
                                         </Typography>
-                                        <Typography component='h3' variant='body2' gutterBottom>
+                                        <Typography component='h3' variant='body2' color={errors.files && touched.files ? 'error' : 'primary'} gutterBottom>
                                             A primeira imagem é a foto principal do seu anúncio.
                                         </Typography>
+                                        {
+                                            errors.files && touched.files
+                                            ?   <Typography variant='body2' color='error' gutterBottom>{errors.files}</Typography>
+                                            :   null
+                                        }
                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: '20px' }}>
                                             <Box
                                                 sx={{
@@ -184,13 +190,13 @@ const Publish = () => {
                                                 }}
                                                 {...getRootProps()}
                                             >
-                                                <input {...getInputProps()} />
-                                                <Typography variant='body2'>
+                                                <input name='files' {...getInputProps()} />
+                                                <Typography variant='body2' color={errors.files && touched.files ? 'error' : 'primary'} >
                                                     Clique para adicionar ou arraste a imagem aqui.
                                                 </Typography>
                                             </Box>
                                             {
-                                                files.map((file, index) => (
+                                                values.files.map((file, index) => (
                                                     <Box
                                                         key={index}
                                                         sx={{
@@ -252,7 +258,7 @@ const Publish = () => {
                                 <Container maxWidth='md'>
                                     <Box sx={{ backgroundColor: theme.palette.background.paper, padding: 4 }}>
 
-                                        <FormControl fullWidth error={errors.description}>
+                                        <FormControl fullWidth error={errors.description && touched.description}>
                                             <InputLabel>Escreva os detalhes do que está vendendo!</InputLabel>
                                             <Input
                                                 name='description'
@@ -263,7 +269,7 @@ const Publish = () => {
                                                 variant="outlined"
                                             />
                                             <FormHelperText>
-                                                {errors.description}
+                                                {errors.description && touched.description ? errors.description : null}
                                             </FormHelperText>
                                         </FormControl>
 
@@ -277,7 +283,7 @@ const Publish = () => {
                                         </Typography>
                                         <br />
 
-                                        <FormControl fullWidth error={errors.price} >
+                                        <FormControl fullWidth error={errors.price && touched.price}>
                                             <InputLabel>Preço de venda</InputLabel>
                                             <Input
                                                 name='price'
@@ -285,7 +291,7 @@ const Publish = () => {
                                                 value={values.price} startAdornment={<InputAdornment position='start'>R$</InputAdornment>}
                                             />
                                             <FormHelperText>
-                                                {errors.price}
+                                                {errors.price && touched.price ? errors.price : null}
                                             </FormHelperText>
                                         </FormControl>
 
@@ -303,41 +309,41 @@ const Publish = () => {
                                         </Typography>
                                         <br />
 
-                                        <FormControl fullWidth error={errors.name} >
+                                        <FormControl fullWidth error={errors.name && touched.name}>
                                             <InputLabel>Nome</InputLabel>
                                             <Input
                                                 name='name'
                                                 onChange={handleChange}
-                                                value={values.name} 
+                                                value={values.name}
                                             />
                                             <FormHelperText>
-                                                {errors.name}
+                                                {errors.name && touched.name ? errors.name : null}
                                             </FormHelperText>
                                         </FormControl>
                                         <br />
                                         <br />
-                                        <FormControl fullWidth error={errors.email} >
+                                        <FormControl fullWidth error={errors.email && touched.email}>
                                             <InputLabel>Email</InputLabel>
                                             <Input
                                                 name='email'
                                                 onChange={handleChange}
-                                                value={values.email} 
+                                                value={values.email}
                                             />
                                             <FormHelperText>
-                                                {errors.email}
+                                              {errors.email && touched.email ? errors.email : null}
                                             </FormHelperText>
                                         </FormControl>
                                         <br />
                                         <br />
-                                         <FormControl fullWidth error={errors.phone} >
+                                        <FormControl fullWidth error={errors.phone && touched.phone}>
                                             <InputLabel>Telefone</InputLabel>
                                             <Input
                                                 name='phone'
                                                 onChange={handleChange}
-                                                value={values.phone} 
+                                                value={values.phone}
                                             />
                                             <FormHelperText>
-                                                {errors.phone}
+                                                {errors.phone && touched.phone ? errors.phone : null}
                                             </FormHelperText>
                                         </FormControl>
                                     </Box>
