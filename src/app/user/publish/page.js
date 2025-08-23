@@ -1,8 +1,6 @@
 'use client'
 
-import { useState } from 'react'
 import { Formik } from 'formik'
-import * as yup from 'yup'
 
 import {
     Box,
@@ -11,7 +9,6 @@ import {
     Typography,
     Select,
     MenuItem,
-    IconButton,
     FormControl,
     FormHelperText,
     InputLabel,
@@ -19,28 +16,11 @@ import {
     Input,
 } from "@mui/material"
 
-import { DeleteForever } from "@mui/icons-material"
-
 import theme from '../../../theme/theme'
 
-import { useDropzone } from "react-dropzone"
+import { initialValues, validationSchema } from './formValues'
 
-const validationSchema = yup.object({
-    title: yup.string()
-        .min(6, 'Escreva um título maior! (Min: 6 caracteres)')
-        .max(20, 'Escreva um título menor! (Max: 20 caracteres)')
-        .required('Campo obrigatório!'),
-
-    category: yup.string().required('Campo obrigatório!'),
-    description: yup.string()
-        .min(50, 'Escreva uma descrição maior! (Min: 50 caracteres)')
-        .required('Campo obrigatório!'),
-    price: yup.number().required('Campo obrigatório!'),
-    email: yup.string().email('Digite um e-mail válido').required('Campo obrigatório!'),
-    name: yup.string().required('Campo obrigatório!'),
-    phone: yup.number('Digite um telefone válido!').typeError('Precisa ser um número!').required('Campo obrigatório!'),
-    files: yup.array().min(1, 'Envie pelo menos uma foto!').required('Campo obrigatório!')
-})
+import FileUpload from '../../../components/FileUpload'
 
 const Publish = () => {
 
@@ -48,16 +28,7 @@ const Publish = () => {
         <>
 
             <Formik
-                initialValues={{
-                    title: '',
-                    category: '',
-                    description: '',
-                    price: '',
-                    email: '',
-                    name: '',
-                    phone: '',
-                    files: [],
-                }}
+                initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
                     console.log('ok', values)
@@ -73,28 +44,6 @@ const Publish = () => {
                         handleSubmit,
                         setFieldValue
                     }) => {
-
-
-                        const { getRootProps, getInputProps } = useDropzone({
-                            accept: 'image/*',
-                            onDrop: (acceptedFile) => {
-                                const newFiles = acceptedFile.map(file => {
-                                    return Object.assign(file, {
-                                        preview: URL.createObjectURL(file)
-                                    })
-                                })
-
-                                setFieldValue('files', [
-                                    ...values.files,
-                                    ...newFiles
-                                ])
-                            }
-                        })
-
-                        const handleRemoveFile = fileName => {
-                            const newFileState = values.files.filter(file => file.name !== fileName)
-                            setFieldValue('files', newFileState)
-                        }
 
                         return (
                             <form onSubmit={handleSubmit}>
@@ -163,96 +112,12 @@ const Publish = () => {
                                 </Container>
 
                                 <Container maxWidth='md'>
-                                    <Box sx={{ backgroundColor: theme.palette.background.paper, padding: 4 }}>
-                                        <Typography component='h3' variant='h6' gutterBottom color={errors.files && touched.files ? 'error' : 'primary'}>
-                                            Imagens
-                                        </Typography>
-                                        <Typography component='h3' variant='body2' color={errors.files && touched.files ? 'error' : 'primary'} gutterBottom>
-                                            A primeira imagem é a foto principal do seu anúncio.
-                                        </Typography>
-                                        {
-                                            errors.files && touched.files
-                                            ?   <Typography variant='body2' color='error' gutterBottom>{errors.files}</Typography>
-                                            :   null
-                                        }
-                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: '20px' }}>
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    marginRight: '15px',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    textAlign: 'center',
-                                                    width: '200px',
-                                                    height: '150px',
-                                                    backgroundColor: theme.palette.background.default,
-                                                    border: '2px dashed black'
-                                                }}
-                                                {...getRootProps()}
-                                            >
-                                                <input name='files' {...getInputProps()} />
-                                                <Typography variant='body2' color={errors.files && touched.files ? 'error' : 'primary'} >
-                                                    Clique para adicionar ou arraste a imagem aqui.
-                                                </Typography>
-                                            </Box>
-                                            {
-                                                values.files.map((file, index) => (
-                                                    <Box
-                                                        key={index}
-                                                        sx={{
-                                                            '&:hover .deleteImage': {
-                                                                display: 'flex'
-                                                            },
-                                                            marginRight: '15px',
-                                                            marginBottom: '15px',
-                                                            position: 'relative',
-                                                            backgroundImage: `url(${file.preview})`,
-                                                            backgroundSize: 'cover',
-                                                            backgroundPosition: 'center center',
-                                                            width: '200px',
-                                                            height: '150px',
-                                                        }}
-                                                    >
-                                                        {
-                                                            index === 0 ?
-                                                                <Box>
-                                                                    <Typography
-                                                                        variant='body2'
-                                                                        sx={{
-                                                                            color: 'white',
-                                                                            position: 'absolute',
-                                                                            bottom: '0',
-                                                                            left: '0',
-                                                                            padding: '5px',
-                                                                            backgroundColor: 'blue',
-                                                                        }}
-                                                                    >
-                                                                        Principal
-                                                                    </Typography>
-                                                                </Box>
-                                                                : null
-
-                                                        }
-                                                        <Box
-                                                            className='deleteImage'
-                                                            sx={{
-                                                                display: 'none',
-                                                                justifyContent: 'center',
-                                                                alignItems: 'center',
-                                                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                                                                width: '100%',
-                                                                height: '100%'
-                                                            }}
-                                                        >
-                                                            <IconButton sx={{ color: 'white' }} onClick={() => handleRemoveFile(file.name)}>
-                                                                <DeleteForever fontSize="large" />
-                                                            </IconButton>
-                                                        </Box>
-                                                    </Box>
-                                                ))
-                                            }
-                                        </Box>
-                                    </Box>
+                                   <FileUpload
+                                        errors={errors.files}
+                                        touched={touched.files}
+                                        files={values.files}
+                                        setFieldValue={setFieldValue}
+                                   />
                                 </Container>
 
                                 <Container maxWidth='md'>
@@ -330,7 +195,7 @@ const Publish = () => {
                                                 value={values.email}
                                             />
                                             <FormHelperText>
-                                              {errors.email && touched.email ? errors.email : null}
+                                                {errors.email && touched.email ? errors.email : null}
                                             </FormHelperText>
                                         </FormControl>
                                         <br />
