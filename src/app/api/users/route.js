@@ -36,7 +36,7 @@ const POST = async (req) => {
         await newUser.save()
 
         return NextResponse.json({
-            message: 'Usuário criado com sucesso!',
+            success: true,
             user: newUser
         })
 

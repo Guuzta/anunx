@@ -1,6 +1,9 @@
 'use client'
 
 import { Formik } from "formik"
+import axios from 'axios'
+
+import { useRouter } from "next/navigation"
 
 import {
     Container,
@@ -10,14 +13,37 @@ import {
     Input,
     InputLabel,
     FormHelperText,
-    Button
+    Button,
+    CircularProgress
 } from "@mui/material"
 
 import theme from '../../../theme/theme'
 
 import { initialValues, validationSchema } from './formValues'
 
+import useToasty from '../../../contexts/Toasty' 
+
 const Signup = () => {
+
+    const router = useRouter()
+
+    const { setToasty } = useToasty()
+
+    const handleFormSubmit = async (values) => {
+
+        const response = await axios.post('/api/users', values)
+
+        if (response.data.success) {
+           setToasty({
+                open: true,
+                text: 'Usuário cadastrado com sucesso!',
+                severity: 'success'
+           })
+
+           router.push('/auth/signin')
+        }
+    }
+
     return (
         <>
             <Container maxWidth='sm' sx={{ marginBottom: '30px' }}>
@@ -48,9 +74,7 @@ const Signup = () => {
                     <Formik
                         initialValues={initialValues}
                         validationSchema={validationSchema}
-                        onSubmit={(values) => {
-                            console.log('ok', values)
-                        }}
+                        onSubmit={handleFormSubmit}
                     >
                         {
                             ({
@@ -59,6 +83,7 @@ const Signup = () => {
                                 errors,
                                 handleChange,
                                 handleSubmit,
+                                isSubmitting,
                             }) => {
                                 return (
                                     <form onSubmit={handleSubmit}>
@@ -118,9 +143,17 @@ const Signup = () => {
                                         <br /><br />
 
                                         <Box sx={{ marginTop: '30px', marginBottom: '10px' }}>
-                                            <Button fullWidth type='submit' variant='contained'>
-                                                CADASTRAR
-                                            </Button>
+                                            {
+                                                isSubmitting
+                                                ? (
+                                                    <CircularProgress sx={{ display: 'block', margin: '10px auto' }}/>
+                                                ) : (
+                                                        <Button fullWidth type='submit' variant='contained'>
+                                                            CADASTRAR
+                                                        </Button>
+                                                )
+                                            }
+
                                         </Box>
 
                                         <Typography

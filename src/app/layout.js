@@ -3,6 +3,7 @@ import './global.css'
 import { roboto } from '../theme/fonts'
 import TemplateDefault from '../templates/Default'
 import MuiThemeProvider from '../theme'
+import { ToastyProvider } from '../contexts/Toasty'
 
 export const metadata = {
   title: 'Exemplo de título',
@@ -15,7 +16,9 @@ export default function RootLayout({ children }) {
       <body className={roboto.className}>
         <MuiThemeProvider>
           <TemplateDefault>
-            {children}
+            <ToastyProvider>
+              {children}
+            </ToastyProvider>
           </TemplateDefault>
         </MuiThemeProvider>
       </body>
