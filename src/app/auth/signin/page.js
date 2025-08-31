@@ -1,7 +1,6 @@
 'use client'
 
 import { Formik } from "formik"
-import axios from 'axios'
 
 import { useRouter } from "next/navigation"
 
@@ -22,6 +21,7 @@ import theme from '../../../theme/theme'
 import { initialValues, validationSchema } from './formValues'
 
 import useToasty from '../../../contexts/Toasty' 
+import { signIn, useSession } from "next-auth/react"
 
 const Signin = () => {
 
@@ -29,7 +29,21 @@ const Signin = () => {
 
     const { setToasty } = useToasty()
 
+    const session = useSession()
+
     const handleFormSubmit = async (values) => {
+        
+        const result = await signIn('credentials', {
+            redirect: false,
+            email: values.email,
+            password: values.password,
+        })
+
+        if (result.error) {
+            return
+        }
+
+        router.replace('/user/publish')
     }
 
     return (
