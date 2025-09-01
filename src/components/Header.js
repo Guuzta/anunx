@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import Link from 'next/link'
+import { signOut, useSession } from "next-auth/react"
 
 import {
   Container,
@@ -22,6 +23,8 @@ const Header = () => {
 
   const openUserMenu = Boolean(anchorUserMenu)
 
+  const { data: session } = useSession()
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" >
@@ -32,19 +35,26 @@ const Header = () => {
               Anunx
             </Typography>
 
-            <Link href='/user/publish'>
-              <Button color='secondary' variant='outlined'>
+            <Link href={session ? '/user/publish' : '/auth/signin'}>
+              <Button color='secondary' variant='outlined' sx={{ marginRight: '10px' }}>
                 Anunciar e vender
               </Button>
             </Link>
 
-            <IconButton onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
-              <Avatar sx={{ marginRight: '10px' }} alt="Gustavo" src="" />
-              <Typography variant='subtitle2' color='secondary'>Gustavo</Typography>
-            </IconButton>
+            {
+              session
+                ? (
+                    <IconButton onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
+                      <Avatar sx={{ marginRight: '10px' }} alt="Gustavo" src={session.user.image} />
+                      <Typography variant='subtitle2' color='secondary'>{session.user.name}</Typography>
+                    </IconButton>
+                ) : null
+            }
 
-            <Menu 
-              open={openUserMenu} 
+
+
+            <Menu
+              open={openUserMenu}
               anchorEl={anchorUserMenu}
               onClose={() => setAnchorUserMenu(null)}
             >
@@ -54,7 +64,7 @@ const Header = () => {
               <Link href='/user/publish'>
                 <MenuItem>Publicar novo anúncio</MenuItem>
               </Link>
-              <MenuItem>Sair</MenuItem>
+              <MenuItem onClick={() => signOut({ callbackUrl: '/' })}>Sair</MenuItem>
             </Menu>
           </Toolbar>
         </Container>
