@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import GoogleProvider from "next-auth/providers/google"
 import axios from "axios"
 
 const nextAuthOptions = {
@@ -12,19 +13,24 @@ const nextAuthOptions = {
             },
 
             async authorize(credentials) {
-                const response = await axios.post(`${process.env.NEXTAUTH_URL}/api/signin`,{
+                const response = await axios.post(`${process.env.NEXTAUTH_URL}/api/signin`, {
                     email: credentials.email,
                     password: credentials.password
                 })
 
                 const user = response.data
-                
-                if(user._id) {
+
+                if (user._id) {
                     return user
                 }
 
                 return null
             }
+        }),
+
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET
         })
     ],
     pages: {

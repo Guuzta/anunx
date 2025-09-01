@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from "react"
-
 import { Formik } from "formik"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 import {
     Alert,
@@ -20,9 +20,7 @@ import {
 } from "@mui/material"
 
 import theme from '../../../theme/theme'
-
 import { initialValues, validationSchema } from './formValues'
-
 import useToasty from '../../../contexts/Toasty' 
 import { signIn, useSession } from "next-auth/react"
 
@@ -33,6 +31,8 @@ const Signin = () => {
     const { setToasty } = useToasty()
 
     const session = useSession()
+
+    console.log(session)
 
     const [error, setError] = useState("")
 
@@ -50,6 +50,12 @@ const Signin = () => {
         }
 
         router.replace('/user/publish')
+    }
+
+    const handleGoogleLogin = () => {
+        signIn('google', {
+            callbackUrl: 'http://localhost:3000/user/publish'
+        })
     }
 
     return (
@@ -91,6 +97,38 @@ const Signin = () => {
                                             && 
                                             <Alert sx={{ padding: 0, marginBottom: '10px' }} severity="error">{error}</Alert>
                                         }
+
+                                        <Box>
+                                            <Button 
+                                                onClick={handleGoogleLogin} 
+                                                variant="contained" 
+                                                fullWidth
+                                                startIcon={
+                                                    <Image
+                                                        src='/images/logo_google.svg'
+                                                        alt='Google Icon'
+                                                        width={30}
+                                                        height={30}
+                                                    />
+                                                }
+                                            >
+                                                Entrar com google
+                                            </Button>
+                                        </Box>
+
+                                        <Box 
+                                            sx={{ 
+                                                display: 'flex', 
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                backgroundColor: '#e8e8e8',
+                                                width: '100%',
+                                                height: 1,
+                                                marginY: '20px'
+                                            }}
+                                        >
+                                            <span>Ou</span>
+                                        </Box>
 
                                         <FormControl fullWidth error={errors.email && touched.email}>
                                             <InputLabel>Email</InputLabel>
