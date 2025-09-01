@@ -1,10 +1,13 @@
 'use client'
 
+import { useState } from "react"
+
 import { Formik } from "formik"
 
 import { useRouter } from "next/navigation"
 
 import {
+    Alert,
     Container,
     Typography,
     Box,
@@ -31,6 +34,8 @@ const Signin = () => {
 
     const session = useSession()
 
+    const [error, setError] = useState("")
+
     const handleFormSubmit = async (values) => {
         
         const result = await signIn('credentials', {
@@ -40,6 +45,7 @@ const Signin = () => {
         })
 
         if (result.error) {
+            setError('Credênciais Inválidas! Tente novamente.')
             return
         }
 
@@ -79,6 +85,12 @@ const Signin = () => {
                             }) => {
                                 return (
                                     <form onSubmit={handleSubmit}>
+
+                                        {
+                                            error 
+                                            && 
+                                            <Alert sx={{ padding: 0, marginBottom: '10px' }} severity="error">{error}</Alert>
+                                        }
 
                                         <FormControl fullWidth error={errors.email && touched.email}>
                                             <InputLabel>Email</InputLabel>
