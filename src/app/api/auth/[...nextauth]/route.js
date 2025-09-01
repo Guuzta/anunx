@@ -13,7 +13,7 @@ const nextAuthOptions = {
             },
 
             async authorize(credentials) {
-                const response = await axios.post(`${process.env.NEXTAUTH_URL}/api/signin`, {
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/signin`, {
                     email: credentials.email,
                     password: credentials.password
                 })

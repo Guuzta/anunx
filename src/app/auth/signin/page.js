@@ -54,7 +54,7 @@ const Signin = () => {
 
     const handleGoogleLogin = () => {
         signIn('google', {
-            callbackUrl: 'http://localhost:3000/user/publish'
+            callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/user/publish`
         })
     }
 
