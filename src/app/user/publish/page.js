@@ -1,11 +1,16 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+
 import { Formik } from 'formik'
+
+import axios from 'axios'
 
 import {
     Box,
     Button,
     Container,
+    CircularProgress,
     Typography,
     Select,
     MenuItem,
@@ -22,7 +27,48 @@ import { initialValues, validationSchema } from './formValues'
 
 import FileUpload from '../../../components/FileUpload'
 
+import useToasty from '../../../contexts/Toasty'
+
 const Publish = () => {
+
+    const { setToasty } = useToasty()
+    const router = useRouter()
+
+    const handleSuccess = () => {
+        setToasty({
+            open: true,
+            text: 'Produto cadastrado com sucesso!',
+            severity: 'success'
+        })
+
+        router.push('/user/dashboard')
+    }
+
+    const handleError = () => {
+        setToasty({
+            open: true,
+            text: 'Ops, ocorreu um erro!',
+            severity: 'error'
+        })
+    }
+
+    const handleFormSubmit = (values) => {
+        const formData = new FormData()
+
+        for (let field in values) {
+            if (field === 'files') {
+                values.files.forEach(file => {
+                    formData.append('files', file)
+                })
+            } else {
+                formData.append(field, values[field])
+            }
+        }
+
+        axios.post('/api/products', formData)
+            .then(handleSuccess)
+            .catch(handleError)
+    }
 
     return (
         <>
@@ -30,9 +76,7 @@ const Publish = () => {
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={(values) => {
-                    console.log('ok', values)
-                }}
+                onSubmit={handleFormSubmit}
 
             >
                 {
@@ -42,7 +86,8 @@ const Publish = () => {
                         errors,
                         handleChange,
                         handleSubmit,
-                        setFieldValue
+                        setFieldValue,
+                        isSubmitting
                     }) => {
 
                         return (
@@ -112,12 +157,12 @@ const Publish = () => {
                                 </Container>
 
                                 <Container maxWidth='md'>
-                                   <FileUpload
+                                    <FileUpload
                                         errors={errors.files}
                                         touched={touched.files}
                                         files={values.files}
                                         setFieldValue={setFieldValue}
-                                   />
+                                    />
                                 </Container>
 
                                 <Container maxWidth='md'>
@@ -216,9 +261,16 @@ const Publish = () => {
 
                                 <Container maxWidth='md' sx={{ my: 5 }}>
                                     <Box textAlign='right'>
-                                        <Button type='submit' variant="contained">
-                                            Publicar Anúncio
-                                        </Button>
+                                        {
+                                            isSubmitting 
+                                            ? (
+                                                    <CircularProgress sx={{ display: 'block', margin: '10px auto' }}/>
+                                            ) : (
+                                                    <Button type='submit' variant="contained">
+                                                            Publicar Anúncio
+                                                    </Button>
+                                            )
+                                        }
                                     </Box>
                                 </Container>
                             </form>

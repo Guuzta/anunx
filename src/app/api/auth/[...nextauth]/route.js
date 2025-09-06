@@ -39,9 +39,32 @@ const nextAuthOptions = {
     session: {
         strategy: 'jwt'
     },
-    secret: process.env.NEXTAUTH_SECRET
+    secret: process.env.NEXTAUTH_SECRET,
+
+    callbacks: {
+        
+        async jwt({ token, user}) {
+            if (user) {
+                token.id = user._id ?? user.id
+            }
+
+            return token
+        },
+
+        async session({ session, token }) {
+            if (token) {
+                session.user.id = token.id
+            }
+
+            return session
+        }
+    }
 }
 
 const handler = NextAuth(nextAuthOptions)
 
-export { handler as GET, handler as POST }
+export { 
+    handler as GET, 
+    handler as POST,
+    nextAuthOptions
+}
