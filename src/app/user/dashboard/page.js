@@ -1,5 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+
 import {
     Container,
     Typography,
@@ -8,8 +11,7 @@ import {
 } from '@mui/material'
 
 import Card from '../../../components/Card'
-import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { formatCurrency  } from '@/utils/currency'
 
 const Dashboard = () => {
 
@@ -61,7 +63,7 @@ const Dashboard = () => {
                                 <Card
                                     image={`/uploads/${product.files[0].name}`}
                                     title={product.title}
-                                    subtitle={product.price}
+                                    subtitle={formatCurrency(product.price)}
                                     actions={
                                         <>
                                             <Button size="small" color='primary' variant='contained' >
