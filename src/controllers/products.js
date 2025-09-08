@@ -6,6 +6,7 @@ import Products from '../models/products'
 
 import { getServerSession } from "next-auth"
 import { nextAuthOptions } from '../app/api/auth/[...nextauth]/route'
+import dbConnect from '../utils/dbConnect'
 
 const GET = async () => {
 
@@ -99,7 +100,36 @@ const POST = async (req) => {
     }
 }
 
+const DELETE = async (req) => {
+
+    try {
+        await dbConnect()
+
+        const data = await req.json()
+
+        const { id } = data
+
+        const deleted = await Products.findOneAndDelete({ _id: id })
+
+        if (deleted) {
+            return NextResponse.json({
+                success: true,
+                message: 'Produto deletado com sucesso!'
+            })
+        }
+
+        return NextResponse.json({
+            success: false,
+            message: 'Não foi possível deletar!'
+        })
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     GET,
-    POST
+    POST,
+    DELETE
 }

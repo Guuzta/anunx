@@ -1,6 +1,7 @@
 export { 
     GET,
-    POST 
+    POST,
+    DELETE 
 } from '../../../controllers/products'
 
 export const config = {
