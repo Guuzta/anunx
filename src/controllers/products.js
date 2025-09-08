@@ -7,6 +7,29 @@ import Products from '../models/products'
 import { getServerSession } from "next-auth"
 import { nextAuthOptions } from '../app/api/auth/[...nextauth]/route'
 
+const GET = async () => {
+
+    await dBConnect()
+
+    const session = await getServerSession(nextAuthOptions)
+
+    const products = await Products.find()
+
+    const userId = session.user.id
+
+    const userProducts = products.filter((product) => {
+        if (product.user.id === userId) {
+            return product
+        }
+    })
+
+    return NextResponse.json({
+        success: true,
+        userProducts
+    })
+
+}
+
 const POST = async (req) => {
 
     const session = await getServerSession(nextAuthOptions)
@@ -77,5 +100,6 @@ const POST = async (req) => {
 }
 
 export {
+    GET,
     POST
 }

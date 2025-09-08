@@ -8,8 +8,27 @@ import {
 } from '@mui/material'
 
 import Card from '../../../components/Card'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 
 const Dashboard = () => {
+
+    const [products, setProducts] = useState([])
+
+    useEffect(() => {
+        const getProducts = async () => {
+
+            const response = await axios.get('/api/products')
+
+            const { userProducts } = response.data
+
+            setProducts(userProducts)
+        }
+
+        getProducts()
+    }, [])
+
+
     return (
         <>
             <Container maxWidth='sm'>
@@ -36,74 +55,27 @@ const Dashboard = () => {
             </Container>
             <Container maxWidth='md'>
                 <Grid container spacing={4}>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <Card
-                            image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
-                            title='Produto'
-                            subtitle='R$ 10,90'
-                            actions={
-                                <>
-                                    <Button size="small" color='primary' variant='contained' >
-                                        Editar
-                                    </Button>
-                                    <Button size="small" color='primary' variant='contained'>
-                                        Remover
-                                    </Button>
-                                </>
-                            }
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <Card
-                            image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
-                            title='Produto'
-                            subtitle='R$ 10,90'
-                            actions={
-                                <>
-                                    <Button size="small" color='primary' variant='contained' >
-                                        Editar
-                                    </Button>
-                                    <Button size="small" color='primary' variant='contained'>
-                                        Remover
-                                    </Button>
-                                </>
-                            }
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <Card
-                            image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
-                            title='Produto'
-                            subtitle='R$ 10,90'
-                            actions={
-                                <>
-                                    <Button size="small" color='primary' variant='contained' >
-                                        Editar
-                                    </Button>
-                                    <Button size="small" color='primary' variant='contained'>
-                                        Remover
-                                    </Button>
-                                </>
-                            }
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <Card
-                            image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
-                            title='Produto'
-                            subtitle='R$ 10,90'
-                            actions={
-                                <>
-                                    <Button size="small" color='primary' variant='contained' >
-                                        Editar
-                                    </Button>
-                                    <Button size="small" color='primary' variant='contained'>
-                                        Remover
-                                    </Button>
-                                </>
-                            }
-                        />
-                    </Grid>
+                    {
+                        products.map(product => (
+                            <Grid key={product._id} size={{ xs: 12, sm: 6, md: 4 }}>
+                                <Card
+                                    image={`/uploads/${product.files[0].name}`}
+                                    title={product.title}
+                                    subtitle={product.price}
+                                    actions={
+                                        <>
+                                            <Button size="small" color='primary' variant='contained' >
+                                                Editar
+                                            </Button>
+                                            <Button size="small" color='primary' variant='contained'>
+                                                Remover
+                                            </Button>
+                                        </>
+                                    }
+                                />
+                            </Grid>
+                        ))
+                    }
                 </Grid>
             </Container>
         </>
