@@ -1,5 +1,9 @@
 'use client'
 
+import { use, useEffect, useState } from "react"
+
+import axios from "axios"
+
 import {
     Avatar,
     Box,
@@ -9,14 +13,50 @@ import {
     Chip,
     Container,
     Grid,
-    Typography
+    Typography,
+    CircularProgress
 } from "@mui/material"
 
 import Carousel from "react-material-ui-carousel"
 
-import theme from '../../theme/theme'
+import theme from "@/theme/theme"
 
-const Product = () => {
+import { formatCurrency } from "@/utils/currency"
+
+const Product = ({ params }) => {
+
+    const [product, setProduct] = useState(null)
+    
+    const [loading, setLoading] = useState(true)
+
+    const { id }  = use(params)
+
+    useEffect(() => {
+        const getProduct = async () => {
+            const response = await axios.get(`/api/products/list?id=${id}`)
+
+            const { product } = response.data
+
+            setProduct(product)
+
+            setLoading(false)
+
+            console.log(product.files)
+        }
+
+        getProduct()
+    }, [id])
+
+
+
+    if (loading) {
+        return (
+            <>
+                <CircularProgress sx={{ display: 'block', margin: '10px auto' }}></CircularProgress>
+            </>
+        )
+    }
+
     return (
         <Container maxWidth='md'>
             <Grid container spacing={3}>
@@ -29,35 +69,21 @@ const Product = () => {
                         <Carousel
                             autoPlay={false}
                             animation="slide"
-                            indicators={false}
+                            indicators={true}
                         >
-
-                            <Card>
-                                <CardMedia
-                                    component='img'
-                                    height='400'
-                                    image='https://random-image-pepebigotes.vercel.app/api/random-image?a=1'
-                                    title='Título da imagem'
-                                />
-                            </Card>
-
-                            <Card>
-                                <CardMedia
-                                    component='img'
-                                    height='400'
-                                    image='https://random-image-pepebigotes.vercel.app/api/random-image?a=2'
-                                    title='Título da imagem'
-                                />
-                            </Card>
-
-                            <Card>
-                                <CardMedia
-                                    component='img'
-                                    height='400'
-                                    image='https://random-image-pepebigotes.vercel.app/api/random-image?a=3'
-                                    title='Título da imagem'
-                                />
-                            </Card>
+                            {
+                                product.files.map((file, index) => (
+                                    <Card key={file._id}>
+                                        <CardMedia
+                                            component='img'
+                                            height='400'
+                                            image={`/uploads/${file.name}`}
+                                            title='Título da imagem'
+                                            alt={file.name}
+                                        />
+                                    </Card>
+                                ))
+                            }
                         </Carousel>
 
                     </Box>
@@ -75,12 +101,12 @@ const Product = () => {
                             Publicado em 16 de agosto de 2025
                         </Typography>
                         <Typography component='h4' variant='h4' sx={{ marginY: '5px' }}>
-                            Celta 2008 Flex Duas Portas
+                            {product.title}
                         </Typography>
                         <Typography component='h4' variant='h4' sx={{ fontWeight: 'bold', marginY: '5px' }}>
-                            R$ 17.000,00
+                            {formatCurrency(product.price)}
                         </Typography>
-                        <Chip label='Categoria' variant='contained' sx={{ backgroundColor: theme.palette.background.default, marginY: '5px' }} />
+                        <Chip label={product.category} variant='contained' sx={{ backgroundColor: theme.palette.background.default, marginY: '5px' }} />
                     </Box>
 
                     <Box
@@ -97,7 +123,7 @@ const Product = () => {
                         </Typography>
 
                         <Typography component='p' variant='body2'>
-                            Lorem ipsum dolor sit amet. Id nemo ducimus sed officia rerum et beatae voluptatem ex quas neque! Ex incidunt illo aut exercitationem repudiandae ut earum eveniet aut vero maiores! Est laboriosam consequatur eum delectus galisum aut voluptatem quia aut accusamus fuga sit delectus neque et quia aliquam! 33 voluptas natus et illum aliquid et delectus totam!
+                            {product.description}
                         </Typography>
                     </Box>
 
@@ -106,10 +132,10 @@ const Product = () => {
                     <Card sx={{ backgroundColor: theme.palette.background.paper }} elevation={0}>
                         <CardHeader
                             avatar={
-                                <Avatar alt="Gustavo" src="#" />
+                                <Avatar alt="Gustavo" src={product.user.image} />
                             }
-                            title='Gustavo Bodziak'
-                            subheader='GustavoTeste@gmail.com'
+                            title={product.user.name}
+                            subheader={product.user.email}
                         />
                     </Card>
 

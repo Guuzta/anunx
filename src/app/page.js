@@ -1,5 +1,10 @@
 'use client'
 
+import { useEffect, useState } from "react"
+import axios from "axios"
+import Link from "next/link"
+import slugify from "slugify"
+
 import {
   Paper,
   Container,
@@ -13,7 +18,24 @@ import SearchIcon from '@mui/icons-material/Search'
 
 import Card from '../components/Card'
 
+import { formatCurrency } from "@/utils/currency"
+
 export default function Home() {
+
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const response = await axios.get('/api/products')
+
+      const { lastProducts } = response.data
+
+      setProducts(lastProducts)
+    }
+
+    getProducts()
+  }, [])
+
   return (
     <>
       <Container maxWidth='md'>
@@ -38,27 +60,24 @@ export default function Home() {
         </Typography>
 
         <Grid container spacing={4} >
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card
-              image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
-              title='Produto'
-              subtitle='R$ 20,90'
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card
-              image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
-              title='Produto'
-              subtitle='R$ 20,90'
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card
-              image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
-              title='Produto'
-              subtitle='R$ 20,90'
-            />
-          </Grid>
+          {
+            products.map(product => {
+              const category = slugify(product.category).toLowerCase()
+              const title = slugify(product.title).toLowerCase()
+
+              return (
+                <Grid key={product._id} size={{ xs: 12, sm: 6, md: 4 }}>
+                  <Link href={`/${category}/${title}/${product._id}`}>
+                    <Card
+                      image={`/uploads/${product.files[0].name}`}
+                      title={product.title}
+                      subtitle={formatCurrency(product.price)}
+                    />
+                  </Link>
+                </Grid>
+              )
+            })
+          }
         </Grid>
       </Container>
     </>

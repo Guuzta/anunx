@@ -1,4 +1,5 @@
 import fs from 'fs'
+import mongoose from 'mongoose'
 import path from 'path'
 import { NextResponse } from "next/server"
 import dBConnect from '../utils/dbConnect'
@@ -13,10 +14,15 @@ const GET = async () => {
     await dBConnect()
 
     const session = await getServerSession(nextAuthOptions)
+    const userId = session.user.id
 
     const products = await Products.find()
 
-    const userId = session.user.id
+    const lastProducts = await Products.aggregate([
+        { $match: { 'user.id': userId } },
+        { $sample: { size: 6 } }
+    ])
+
 
     const userProducts = products.filter((product) => {
         if (product.user.id === userId) {
@@ -26,7 +32,8 @@ const GET = async () => {
 
     return NextResponse.json({
         success: true,
-        userProducts
+        userProducts,
+        lastProducts
     })
 
 }
