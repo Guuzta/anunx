@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import Link from "next/link"
 import slugify from "slugify"
+import { useRouter } from "next/navigation"
 
 import {
   Paper,
@@ -22,7 +23,11 @@ import { formatCurrency } from "@/utils/currency"
 
 export default function Home() {
 
+  const router = useRouter()
+
   const [products, setProducts] = useState([])
+
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     const getProducts = async () => {
@@ -36,6 +41,12 @@ export default function Home() {
     getProducts()
   }, [])
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    router.push(`search?query=${search}`)
+  }
+
   return (
     <>
       <Container maxWidth='md'>
@@ -43,11 +54,15 @@ export default function Home() {
           O que deseja encontrar?
         </Typography>
         <Paper sx={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
-          <InputBase
-            placeholder="Ex.: Escreva um produto que deseja encontrar"
-            sx={{ padding: '5px 10px' }}
-            fullWidth
-          ></InputBase>
+          <form onSubmit={handleSubmit}>
+            <InputBase
+              placeholder="Ex.: Escreva um produto que deseja encontrar"
+              sx={{ padding: '5px 10px' }}
+              onChange={(e) => setSearch(e.target.value)}
+              value={search}
+              fullWidth
+            />
+          </form>
           <IconButton>
             <SearchIcon />
           </IconButton>

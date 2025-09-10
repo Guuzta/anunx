@@ -262,14 +262,14 @@ const Publish = () => {
                                 <Container maxWidth='md' sx={{ my: 5 }}>
                                     <Box textAlign='right'>
                                         {
-                                            isSubmitting 
-                                            ? (
-                                                    <CircularProgress sx={{ display: 'block', margin: '10px auto' }}/>
-                                            ) : (
+                                            isSubmitting
+                                                ? (
+                                                    <CircularProgress sx={{ display: 'block', margin: '10px auto' }} />
+                                                ) : (
                                                     <Button type='submit' variant="contained">
-                                                            Publicar Anúncio
+                                                        Publicar Anúncio
                                                     </Button>
-                                            )
+                                                )
                                         }
                                     </Box>
                                 </Container>

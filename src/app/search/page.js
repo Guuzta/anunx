@@ -1,3 +1,12 @@
+'use client'
+
+import { useEffect, useState } from "react"
+import axios from "axios"
+
+import { useSearchParams } from "next/navigation"
+
+import { formatCurrency } from "@/utils/currency"
+
 import {
     Container,
     Typography,
@@ -9,9 +18,27 @@ import {
 
 import SearchIcon from '@mui/icons-material/Search'
 
-import Card from '../../../components/Card'
+import Card from '../../components/Card'
 
 const List = () => {
+
+    const [products, setProducts] = useState([])
+
+    const searchParams = useSearchParams()
+    const query = searchParams.get('query')
+
+    useEffect(() => {
+        const getProducts = async () => {
+            const response = await axios.get(`/api/products/query?query=${query}`)
+
+            const { products } = response.data
+
+            setProducts(products)
+        }
+
+        getProducts()
+    }, [])
+
     return (
         <>
             <Container maxWidth='md'>
@@ -44,27 +71,17 @@ const List = () => {
             <Container maxWidth='md' sx={{ paddingTop: '45px' }}>
 
                 <Grid container spacing={4} >
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <Card
-                            image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
-                            title='Produto'
-                            subtitle='R$ 20,90'
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <Card
-                            image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
-                            title='Produto'
-                            subtitle='R$ 20,90'
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                        <Card
-                            image='https://i.ytimg.com/vi/oh5YvNgw7o8/maxresdefault.jpg'
-                            title='Produto'
-                            subtitle='R$ 20,90'
-                        />
-                    </Grid>
+                    {
+                        products.map(product => (
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                <Card
+                                    image={`/uploads/${product.files[0].name}`}
+                                    title={product.title}
+                                    subtitle={formatCurrency(product.price)}
+                                />
+                            </Grid>
+                        ))
+                    }
                 </Grid>
             </Container>
         </>
